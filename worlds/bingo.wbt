@@ -1,0 +1,96 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  info [
+    "Unviversal Robot UR3e, UR5e and UR10e grasping cans using Robotiq 3F grippers."
+  ]
+  title "Universal Robot"
+  basicTimeStep 8
+  physicsDisableAngularThreshold 0.1
+  coordinateSystem "NUE"
+  contactProperties [
+    ContactProperties {
+      bounce 0.1
+    }
+    ContactProperties {
+      material1 "slope"
+      coulombFriction [
+        0.5
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.62260886891176 -0.7648989582236266 -0.16519013306135893 0.6868047663153629
+  position -4.55443502009237 1.7497894531780158 1.5758003829737006
+  exposure 1.7
+}
+TexturedBackground {
+  texture "noon_building_overcast"
+}
+Floor {
+  size 17 5
+  appearance ThreadMetalPlate {
+  }
+}
+Can {
+  translation -3.82 0.7 0.5
+}
+Table {
+  translation -3.79551 -8.88178e-16 0.148775
+  rotation 0 1 0 1.5708
+  size 1.8 0.7 0.8
+  feetSize 0.05 0.05
+  trayAppearance PBRAppearance {
+    baseColor 0.926 0.912 0.698
+    roughness 0.8
+    metalness 0
+  }
+  legAppearance BrushedAluminium {
+    colorOverride 0.333 0.341 0.325
+  }
+}
+Table {
+  translation -1.96392 0 -0.238031
+  rotation 0 1 0 -1.5707963071795863
+  name "table(1)"
+  size 1.8 0.7 0.8
+  feetSize 0.05 0.05
+  trayAppearance PBRAppearance {
+    baseColor 0.926 0.912 0.698
+    roughness 0.8
+    metalness 0
+  }
+  legAppearance BrushedAluminium {
+    colorOverride 0.333 0.341 0.325
+  }
+}
+UR5e {
+  translation -3.82276 0.61 -0.556387
+  rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
+  controller "<extern>"
+  selfCollision FALSE
+  toolSlot [
+    Camera {
+      locked TRUE
+    }
+    Pen {
+    }
+    DistanceSensor {
+      translation 0 0.1 0
+      rotation 0 0 1 1.570796
+    }
+  ]
+}
+UR5e {
+  translation -2.01299 0.61 -0.941318
+  rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
+  name "UR5e(1)"
+  controller ""
+  selfCollision FALSE
+  toolSlot [
+    DistanceSensor {
+      translation 0 0.1 0
+      rotation 0 0 1 1.570796
+    }
+  ]
+}
