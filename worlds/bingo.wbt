@@ -20,8 +20,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.62260886891176 -0.7648989582236266 -0.16519013306135893 0.6868047663153629
-  position -4.55443502009237 1.7497894531780158 1.5758003829737006
+  orientation 0.998562842782321 -0.04981682799871371 -0.01976189926692593 5.761538585523638
+  position -1.8263644757463087 1.49271929577096 1.5839074231330441
   exposure 1.7
 }
 TexturedBackground {
@@ -33,7 +33,8 @@ Floor {
   }
 }
 Can {
-  translation -3.82 0.7 0.5
+  translation -3.82 0.7610827859784163 0.5
+  rotation 0.8857225619401492 0.015427195385789787 0.46395855947779147 -2.6804598034242363e-17
 }
 Table {
   translation -3.79551 -8.88178e-16 0.148775
@@ -65,9 +66,15 @@ Table {
   }
 }
 UR5e {
-  translation -3.82276 0.61 -0.556387
+  hidden rotation_1 0 0 -1 2.359990192179489e-05
+  hidden rotation_2 0 1 0 1.5708518395711006
+  hidden rotation_3 0 1 0 1.548594170753493e-05
+  hidden rotation_4 0 1 0 1.5707943850478654
+  hidden rotation_5 0 0 1 1.032382731180714e-07
+  hidden rotation_6 0 -1 0 1.032382731180714e-07
+  translation -3.82276 0.72 -0.556387
   rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
-  controller "<extern>"
+  controller "bingoarm"
   selfCollision FALSE
   toolSlot [
     Camera {
@@ -82,7 +89,13 @@ UR5e {
   ]
 }
 UR5e {
-  translation -2.01299 0.61 -0.941318
+  hidden rotation_1 0 0 -1 2.359990192179489e-05
+  hidden rotation_2 0 1 0 1.5708518395711006
+  hidden rotation_3 0 1 0 1.548594170753493e-05
+  hidden rotation_4 0 1 0 1.5707943850478645
+  hidden rotation_5 0 0 1 1.032382731180714e-07
+  hidden rotation_6 0 -1 0 1.032382731180714e-07
+  translation -2.01299 0.71 -0.941318
   rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
   name "UR5e(1)"
   controller ""
@@ -91,6 +104,311 @@ UR5e {
     DistanceSensor {
       translation 0 0.1 0
       rotation 0 0 1 1.570796
+    }
+  ]
+}
+Solid {
+  translation -1.95328 0.78 0.360999
+  rotation 0 -1 0 0.01309
+  children [
+    Solid {
+      translation 0.075 0.01 0.23
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/blueCircle.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(1)"
+    }
+    Solid {
+      translation -0.075 0.01 0.23
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/orangeHexagon.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(2)"
+    }
+    Solid {
+      translation -0.225 0.01 0.23
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(3)"
+    }
+    Solid {
+      translation 0.225 0.01 0.08
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(4)"
+    }
+    Solid {
+      translation 0.225 0.01 -0.07
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(5)"
+    }
+    Solid {
+      translation 0.225 0.01 -0.22
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(6)"
+    }
+    Solid {
+      translation -0.225 0.01 -0.07
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(7)"
+    }
+    Solid {
+      translation -0.075 0.01 -0.22
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(14)"
+    }
+    Solid {
+      translation -0.225 0.01 -0.22
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(15)"
+    }
+    Solid {
+      translation 0.075 0.01 -0.07
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(8)"
+    }
+    Solid {
+      translation 0.075 0.01 -0.22
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(9)"
+    }
+    Solid {
+      translation -0.075 0.01 0.08
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(10)"
+    }
+    Solid {
+      translation -0.225 0.01 0.08
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(11)"
+    }
+    Solid {
+      translation -0.075 0.01 -0.07
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(12)"
+    }
+    Solid {
+      translation 0.075 0.01 0.08
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+      name "solid(13)"
+    }
+    Solid {
+      translation 0.225 0.01 0.23
+      children [
+        TexturedBoxShape {
+          size 0.1 0.001 0.1
+          textureUrl [
+            "textures/greenDiamond.jpg"
+          ]
+          textureMapping "default"
+          frontFace FALSE
+          backFace FALSE
+          leftFace FALSE
+          rightFace FALSE
+          bottomFace FALSE
+        }
+      ]
+    }
+    TexturedBoxShape {
+      size 0.6 0.01 0.6
+      textureUrl [
+        "textures/chessboard.jpg"
+      ]
+      textureMapping "default"
+      frontFace FALSE
+      backFace FALSE
+      leftFace FALSE
+      rightFace FALSE
+      bottomFace FALSE
     }
   ]
 }
