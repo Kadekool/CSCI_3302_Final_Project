@@ -20,8 +20,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.998562842782321 -0.04981682799871371 -0.01976189926692593 5.761538585523638
-  position -1.8263644757463087 1.49271929577096 1.5839074231330441
+  orientation -0.9491580004250626 0.3116797137675469 -0.04421364331150297 6.1157701116861025
+  position -1.8827260491859954 0.9335857061920175 2.6264733286917883
   exposure 1.7
 }
 TexturedBackground {
@@ -66,18 +66,16 @@ Table {
   }
 }
 UR5e {
-  hidden rotation_1 0 0 -1 2.359990192179489e-05
-  hidden rotation_2 0 1 0 1.5708518395711006
-  hidden rotation_3 0 1 0 1.548594170753493e-05
-  hidden rotation_4 0 1 0 1.5707943850478654
-  hidden rotation_5 0 0 1 1.032382731180714e-07
-  hidden rotation_6 0 -1 0 1.032382731180714e-07
-  translation -3.82276 0.72 -0.556387
+  translation -2.01299 0.7 -0.7
   rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
+  name "player1"
   controller "bingoarm"
   selfCollision FALSE
   toolSlot [
     Camera {
+      translation 0 -0.01 0.02
+      rotation -0.8678589843716288 0.374939077349494 -0.32594703790916013 -1.57
+      contactMaterial "wrist_3_joint"
       locked TRUE
     }
     Pen {
@@ -89,13 +87,7 @@ UR5e {
   ]
 }
 UR5e {
-  hidden rotation_1 0 0 -1 2.359990192179489e-05
-  hidden rotation_2 0 1 0 1.5708518395711006
-  hidden rotation_3 0 1 0 1.548594170753493e-05
-  hidden rotation_4 0 1 0 1.5707943850478645
-  hidden rotation_5 0 0 1 1.032382731180714e-07
-  hidden rotation_6 0 -1 0 1.032382731180714e-07
-  translation -2.01299 0.71 -0.941318
+  translation -3.82274 0.72 -0.556387
   rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
   name "UR5e(1)"
   controller "bingoarm"
@@ -108,7 +100,7 @@ UR5e {
   ]
 }
 Solid {
-  translation -1.95328 0.78 0.360999
+  translation -1.95328 0.7 -0.1
   rotation 0 -1 0 0.01309
   children [
     Solid {
