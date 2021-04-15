@@ -20,8 +20,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.9491580004250626 0.3116797137675469 -0.04421364331150297 6.1157701116861025
-  position -1.8827260491859954 0.9335857061920175 2.6264733286917883
+  orientation 0.9996921470687935 -0.018435592551307483 -0.01660542129148408 5.040715382807596
+  position -2.0930191056856766 3.7357402629181884 1.090289622948337
   exposure 1.7
 }
 TexturedBackground {
@@ -65,7 +65,7 @@ Table {
     colorOverride 0.333 0.341 0.325
   }
 }
-UR5e {
+DEF arm1 UR5e {
   translation -2.01299 0.7 -0.7
   rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
   name "player1"
@@ -86,7 +86,7 @@ UR5e {
     }
   ]
 }
-UR5e {
+DEF arm2 UR5e {
   translation -3.82274 0.72 -0.556387
   rotation -0.5773502691896258 -0.5773502691896258 -0.5773502691896258 2.094395
   name "UR5e(1)"
@@ -99,7 +99,7 @@ UR5e {
     }
   ]
 }
-Solid {
+DEF board1 Solid {
   translation -1.95328 0.7 -0.1
   rotation 0 -1 0 0.01309
   children [
@@ -109,7 +109,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/blueCircle.jpg"
+            "textures/pinkTrapezoid.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -120,6 +120,7 @@ Solid {
         }
       ]
       name "solid(1)"
+      locked TRUE
     }
     Solid {
       translation -0.075 0.01 0.23
@@ -127,7 +128,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/orangeHexagon.jpg"
+            "textures/yellowTrapezoid.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -145,7 +146,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/pinkCircle.jpg"
+            "textures/orangeTrapezoid.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -163,7 +164,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/brownTrapezoid.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -181,7 +182,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/pinkHexagon.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -199,7 +200,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/blueTrapezoid.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -217,7 +218,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/blueCircle.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -235,7 +236,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/orangeTriangle.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -253,7 +254,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/brownHexagon.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -271,7 +272,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/yellowParallelogram.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -289,7 +290,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/blueTriangle.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -307,7 +308,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/orangeParallelogram.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -325,7 +326,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/brownTriangle.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -343,7 +344,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/blueParallelogram.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -361,7 +362,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/pinkCircle.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -379,7 +380,7 @@ Solid {
         TexturedBoxShape {
           size 0.1 0.001 0.1
           textureUrl [
-            "textures/greenDiamond.jpg"
+            "textures/pinkTriangle.jpg"
           ]
           textureMapping "default"
           frontFace FALSE
@@ -403,4 +404,8 @@ Solid {
       bottomFace FALSE
     }
   ]
+}
+AiboErs7 {
+  controller "bingomaster"
+  supervisor TRUE
 }
