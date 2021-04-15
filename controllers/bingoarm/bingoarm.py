@@ -75,6 +75,7 @@ while robot.step(timestep) != -1:
         if(counter < 100):
             print(counter, chooseTarget(), random.randrange(100))
         pass
+        
     # Move arm to square 1
     elif state==1:
         if counter==0:
@@ -170,6 +171,102 @@ while robot.step(timestep) != -1:
             pass
         else:
            counter=0
-           state=1
-
+           state=9
+           
+   # Move arm to square 9
+    elif state==9:
+        if counter==0:
+            moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, 0.72)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=10
+            
+   # Move arm to square 10
+    elif state==10:
+        if counter==0:
+            moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, 0.72)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=11
+            
+   # Move arm to square 11      
+    elif state==11:
+        if counter==0:
+            moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, 0.72)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=12
+            
+   # Move arm to square 12      
+    elif state==12:
+        if counter==0:
+            moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, 0.72)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=13      
+         
+   # Move arm to square 13      
+    elif state==13:
+        if counter==0:
+            moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, 0.9)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=14  
+            
+   # Move arm to square 14      
+    elif state==14:
+        if counter==0:
+            moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, 0.95)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=15  
+   
+   # Move arm to square 15      
+    elif state==15:
+        if counter==0:
+            moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, 1)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=16  
+            
+   # Move arm to square 16      
+    elif state==16:
+        if counter==0:
+            moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, 1.08)
+            counter = counter+1
+        elif counter<300:
+            counter = counter+1
+            pass
+        else:
+            counter=0
+            state=1  
+         
 # Enter here exit cleanup code.
