@@ -4,10 +4,13 @@
 #  from controller import Robot, Motor, DistanceSensor
 # from controller import Robot
 from controller import Supervisor
+from controller import Emitter
 import random
+import struct
 # create the Robot instance.
 # robot = Robot()
 supervisor = Supervisor()
+emitter = supervisor.getDevice("emitter")
 # get the time step of the current world.
 timestep = int(supervisor.getBasicTimeStep())
 
@@ -31,9 +34,10 @@ def chooseTarget():
     target = possCombo[choice]
     possCombo.remove(target)
     return target
+    
 def randomize_boards():
     
-    for boardName in ["board1"]:
+    for boardName in ["board1", "board2"]:
         board = supervisor.getFromDef(boardName)
         
         children = board.getField("children")
@@ -43,10 +47,15 @@ def randomize_boards():
             randIndexes = random.sample(range(len(allCombo)), numSquares)
             for i in range(numSquares):
                 child = children.getMFNode(i)
-                shape = child.getField("children").getMFNode(0)
-                combo = allCombo[randIndexes[i]]
-                shapeName = combo[0] + combo[1].capitalize()
-                shape.getField("textureUrl").setMFString(0, "textures/" + shapeName + ".jpg")
+                if child.getTypeName() == "Solid":
+                    shape = child.getField("children").getMFNode(0)
+                    combo = allCombo[randIndexes[i]]
+                    shapeName = combo[0] + combo[1].capitalize()
+                    shape.getField("textureUrl").setMFString(0, "textures/" + shapeName + ".jpg")
+    
+
+
+counter = 0
 
 randomize_boards()
 while supervisor.step(timestep) != -1:
@@ -58,7 +67,19 @@ while supervisor.step(timestep) != -1:
 
     # Enter here functions to send actuator commands, like:
     #  motor.setPosition(10.0)
-
+    
+    if counter == 500:
+        target = chooseTarget()
+        if target:
+            targetName = target[0] + " " + target[1]
+            print("FROM EMITTER: ", targetName)
+            emitter.send(bytes(targetName, 'utf-8'))
+        else:
+            break
+        counter = 0
+    counter += 1
+    
+    
     pass
 
 # Enter here exit cleanup code.

@@ -4,12 +4,15 @@
 #  from controller import Robot, Motor, DistanceSensor
 from controller import Robot
 from controller import Camera
+from controller import Receiver
 import random
+import struct
 
 
 # create the Robot instance.
 robot = Robot()
-camera = Camera("camera")
+camera = robot.getDevice("camera")
+receiver = robot.getDevice("receiver")
 
 # get the time step of the current world.
 timestep = int(robot.getBasicTimeStep())
@@ -29,29 +32,29 @@ wrist3Pos = 0.0
 
 
 camera.enable(1)
+receiver.enable(1)
+
 joints = []
 for joint in ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"]:
     joints.append(robot.getDevice(joint))
 
 
-counter = 0
 joints[1].setPosition(0)
 state=1
 
 counter = 0;
 
-random.seed(3)
-colors = ["blue", "brown", "green", "orange", "pink", "yellow"]
-shapes = ["circle", "diamond", "hexagon", "parallelogram", "trapezoid", "triangle"]
-possCombo = [(c, s) for c in colors for s in shapes]
-def chooseTarget():
+# colors = ["blue", "brown", "green", "orange", "pink", "yellow"]
+# shapes = ["circle", "diamond", "hexagon", "parallelogram", "trapezoid", "triangle"]
+# possCombo = [(c, s) for c in colors for s in shapes]
+# def chooseTarget():
 
-    if len(possCombo) <= 0:
-        return None
-    choice = random.randrange(len(possCombo))
-    target = possCombo[choice]
-    possCombo.remove(target)
-    return target
+    # if len(possCombo) <= 0:
+        # return None
+    # choice = random.randrange(len(possCombo))
+    # target = possCombo[choice]
+    # possCombo.remove(target)
+    # return target
 
 def moveArm(joints, one, two, three, four, five, six):
     joints[0].setPosition(one)
@@ -68,7 +71,11 @@ while robot.step(timestep) != -1:
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()
-
+    
+    if receiver.getQueueLength() > 0:
+        print("GOT AT " + robot.getName() + " " + receiver.getData().decode())
+        receiver.nextPacket()
+        
     # Process sensor data here.
     if state == 0:
         counter+=1
