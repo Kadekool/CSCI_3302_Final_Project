@@ -23,8 +23,8 @@ timestep = int(supervisor.getBasicTimeStep())
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 NUMSQUARES = 16 # board size
-colors = ["blue", "brown", "green", "orange", "pink", "yellow"]
-shapes = ["circle", "diamond", "hexagon", "parallelogram", "trapezoid", "triangle"]
+colors = ["blue", "green", "orange", "pink", "yellow"]
+shapes = ["circle", "diamond", "hexagon", "parallelogram", "triangle"]
 allCombo = [(c, s) for c in colors for s in shapes]
 possCombo = allCombo.copy()
 def chooseTarget():

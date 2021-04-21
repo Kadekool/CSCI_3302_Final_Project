@@ -44,7 +44,7 @@ for joint in ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist
 
 
 joints[1].setPosition(0)
-state=1
+state=0
 
 counter = 0
 found = True
@@ -68,8 +68,43 @@ def moveArm(joints, one, two, three, four, five, six):
     joints[3].setPosition(four)
     joints[4].setPosition(five)
     joints[5].setPosition(six)
+    
+
+targetToJointsMap = {
+    1 : (-0.73, -1.34, 2.43, 3.59, 4.76, 0),
+    2 : (-0.54, -1.1, 2.055, 3.69, 4.76, 0.18),
+    3 : (-0.43, -0.87, 1.6, 3.92, 4.76, 0.27),
+    4 : (-0.36, -0.56, 1, 4.2, 4.76, 0.35),
+    5 : (-0.18, -0.55, 0.96, 4.3, 4.76, 0.55),
+    6 : (-0.22, -0.87, 1.6, 3.97, 4.76, 0.5),
+    7 : (-0.28, -1.105, 2.09, 3.69, 4.76, 0.5),
+    8 : (-0.385, -1.37, 2.5, 3.57, 4.76, 0.37),
+    9 : (0.015, -1.33, 2.43, 3.57, 4.76, 0.72),
+    10: (0.005, -1.12, 2.07, 3.66, 4.76, 0.72),
+    11: (0.005, -0.85, 1.58, 3.92, 4.76, 0.72),
+    12 : (0, -0.55, 0.95, 4.25, 4.76, 0.72),
+    13 : (0.175, -0.46, 0.78, 4.3, 4.76, 0.9),
+    14 : (,
+    15 : (,
+    16 : (,
+}
 
 
+targetToCoordMap = {
+}
+
+numSquares = 16
+row_index = 0
+for i in range(numSquares):
+    targetToCoordMap[i] = (row_index, i // 4)
+    row_index += 1
+    if row_index == 4:
+        row_index = 0
+       
+numTargets = 5
+randomTargets = random.sample(range(numSquares), numTargets)
+
+targetCounter = 0
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while robot.step(timestep) != -1:
@@ -83,10 +118,11 @@ while robot.step(timestep) != -1:
         
     # Process sensor data here.
     if state == 0:
-        counter+=1
-        if(counter < 100):
-            print(counter, chooseTarget(), random.randrange(100))
-        pass
+        newTarget = randomTargets[targetCounter]
+        targetCounter += 1
+        if targetCounter >= numTargets:
+            break
+        state = newTarget
         
     # Move arm to square 1
     elif state==1:
