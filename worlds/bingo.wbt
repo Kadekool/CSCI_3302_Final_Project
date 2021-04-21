@@ -20,8 +20,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.9996921470687935 -0.018435592551307483 -0.01660542129148408 5.040715382807596
-  position -2.568791837292316 4.860809617017962 1.3190775118911215
+  orientation 0.9991018788185176 0.03525109956676545 0.02351160821045902 4.980011107737046
+  position -2.647638755086555 4.922439207247425 1.0107105172905502
   exposure 1.7
 }
 TexturedBackground {
@@ -77,6 +77,11 @@ UR5e {
       locked TRUE
     }
     Pen {
+      translation 0 0 -0.03
+      rotation 0 0 1 3.14
+      inkDensity 1
+      leadSize 0.01
+      write FALSE
     }
     DistanceSensor {
       translation 0 0.1 0
@@ -100,6 +105,11 @@ UR5e {
       locked TRUE
     }
     Pen {
+      translation 0 0 -0.03
+      rotation 0 0 1 3.14
+      inkDensity 1
+      leadSize 0.01
+      write FALSE
     }
     DistanceSensor {
       translation 0 0.1 0

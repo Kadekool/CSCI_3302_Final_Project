@@ -5,6 +5,7 @@
 from controller import Robot
 from controller import Camera
 from controller import Receiver
+from controller import Pen
 import random
 import struct
 
@@ -13,6 +14,7 @@ import struct
 robot = Robot()
 camera = robot.getDevice("camera")
 receiver = robot.getDevice("receiver")
+pen = robot.getDevice("pen")
 
 # get the time step of the current world.
 timestep = int(robot.getBasicTimeStep())
@@ -32,7 +34,9 @@ wrist3Pos = 0.0
 
 
 camera.enable(1)
+
 receiver.enable(1)
+pen.write(False)
 
 joints = []
 for joint in ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"]:
@@ -42,7 +46,8 @@ for joint in ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist
 joints[1].setPosition(0)
 state=1
 
-counter = 0;
+counter = 0
+found = True
 
 # colors = ["blue", "brown", "green", "orange", "pink", "yellow"]
 # shapes = ["circle", "diamond", "hexagon", "parallelogram", "trapezoid", "triangle"]
@@ -88,10 +93,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, 0)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=2
 
@@ -100,10 +119,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, 0.18)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=3
 
@@ -112,10 +145,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, 0.27)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=4
 
@@ -124,10 +171,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, 0.35)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=5
 
@@ -136,10 +197,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, 0.55)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=6
 
@@ -148,10 +223,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.22, -0.87, 1.6, 3.97, 4.76, 0.5)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.22, -0.87, 1.6, 3.97, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.22, -0.87, 1.6, 3.97, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=7
 
@@ -161,10 +250,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.28, -1.105, 2.09, 3.69, 4.76, 0.5)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.28, -1.105, 2.09, 3.69, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.28, -1.105, 2.09, 3.69, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=8
 
@@ -173,10 +276,24 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,-0.385, -1.37, 2.5, 3.57, 4.76, 0.37)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,-0.385, -1.37, 2.5, 3.57, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,-0.385, -1.37, 2.5, 3.57, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
+           pen.write(False)
            counter=0
            state=9
            
@@ -185,95 +302,207 @@ while robot.step(timestep) != -1:
         if counter==0:
             moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, 0.72)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=10
+           pen.write(False)
+           counter=0
+           state=10
             
    # Move arm to square 10
     elif state==10:
         if counter==0:
             moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, 0.72)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=11
+           pen.write(False)
+           counter=0
+           state=11
             
    # Move arm to square 11      
     elif state==11:
         if counter==0:
             moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, 0.72)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=12
+           pen.write(False)
+           counter=0
+           state=12
             
    # Move arm to square 12      
     elif state==12:
         if counter==0:
             moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, 0.72)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=13      
+           pen.write(False)
+           counter=0
+           state=13    
          
    # Move arm to square 13      
     elif state==13:
         if counter==0:
             moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, 0.9)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=14  
+           pen.write(False)
+           counter=0
+           state=14  
             
    # Move arm to square 14      
     elif state==14:
         if counter==0:
             moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, 0.95)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=15  
-   
+           pen.write(False)
+           counter=0
+           state=15
+             
    # Move arm to square 15      
     elif state==15:
         if counter==0:
             moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, 1)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=16  
+           pen.write(False)
+           counter=0
+           state=16 
             
    # Move arm to square 16      
     elif state==16:
         if counter==0:
             moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, 1.08)
             counter = counter+1
-        elif counter<300:
+        elif counter<200:
+            counter = counter+1
+            pass
+        elif found and counter<201:
+            pen.write(True)
+            moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, 6.28)
+            counter=counter+1
+        elif found and counter<350:
+            counter = counter+1
+            pass
+        elif found and counter<351:
+            moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, -6.28)
+            counter=counter+1
+        elif found and counter<500:
             counter = counter+1
             pass
         else:
-            counter=0
-            state=1  
+           pen.write(False)
+           counter=0
+           state=1
          
 # Enter here exit cleanup code.
