@@ -52,6 +52,7 @@ joints[1].setPosition(0)
 
 counter = 0
 found = True
+snapshotTaken = False
 
 # colors = ["blue", "brown", "green", "orange", "pink", "yellow"]
 # shapes = ["circle", "diamond", "hexagon", "parallelogram", "trapezoid", "triangle"]
@@ -242,6 +243,10 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         elif found and counter<201:
+            if snapshotTaken==False:
+                snapshotTaken=True
+                camera.saveImage("square1.jpg", 100)
+                pass
             pen.write(True)
             moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, 6.28)
             counter=counter+1
@@ -256,6 +261,7 @@ while robot.step(timestep) != -1:
             pass
         else:
            pen.write(False)
+           snapshotTaken=False
            counter=0
            state=2
 
@@ -268,6 +274,10 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         elif found and counter<201:
+            if snapshotTaken==False:
+                snapshotTaken=True
+                camera.saveImage("square2.jpg", 100)
+                pass
             pen.write(True)
             moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, 6.28)
             counter=counter+1
@@ -281,6 +291,7 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         else:
+           snapshotTaken=False
            pen.write(False)
            counter=0
            state=3
@@ -294,6 +305,10 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         elif found and counter<201:
+            if snapshotTaken==False:
+                snapshotTaken=True
+                camera.saveImage("square3.jpg", 100)
+                pass
             pen.write(True)
             moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, 6.28)
             counter=counter+1
@@ -307,6 +322,7 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         else:
+           snapshotTaken=False
            pen.write(False)
            counter=0
            state=4
@@ -320,6 +336,10 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         elif found and counter<201:
+            if snapshotTaken==False:
+                snapshotTaken=True
+                camera.saveImage("square4.jpg", 100)
+                pass
             pen.write(True)
             moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, 6.28)
             counter=counter+1
@@ -333,6 +353,7 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         else:
+           snapshotTaken=False
            pen.write(False)
            counter=0
            state=5
@@ -346,6 +367,10 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         elif found and counter<201:
+            if snapshotTaken==False:
+                snapshotTaken=True
+                camera.saveImage("square5.jpg", 100)
+                pass
             pen.write(True)
             moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, 6.28)
             counter=counter+1
@@ -359,6 +384,7 @@ while robot.step(timestep) != -1:
             counter = counter+1
             pass
         else:
+           snapshotTaken=False
            pen.write(False)
            counter=0
            state=6
