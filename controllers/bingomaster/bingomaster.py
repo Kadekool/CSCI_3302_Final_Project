@@ -70,7 +70,6 @@ responses = []
 
 NUMCOMBOS = len(shapes) * len(colors)
 randIndexes = random.sample(range(NUMCOMBOS), NUMCOMBOS) # for testing
-print(randIndexes, len(randIndexes))
 while supervisor.step(timestep) != -1:
     # Read the sensors:
     # Enter here functions to read sensor data, like:
