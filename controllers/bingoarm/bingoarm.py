@@ -6,6 +6,7 @@ from controller import Robot
 from controller import Camera
 from controller import Receiver
 from controller import Pen
+from controller import Emitter
 import random
 import struct
 
@@ -13,8 +14,13 @@ import struct
 # create the Robot instance.
 robot = Robot()
 camera = robot.getDevice("camera")
-receiver = robot.getDevice("receiver")
 pen = robot.getDevice("pen")
+emitter = robot.getDevice("emitter")
+emitter.setChannel(1)
+receiver = robot.getDevice("receiver")
+receiver.enable(1)
+receiver.setChannel(0)
+
 
 # get the time step of the current world.
 timestep = int(robot.getBasicTimeStep())
@@ -34,8 +40,6 @@ wrist3Pos = 0.0
 
 
 camera.enable(1)
-
-receiver.enable(1)
 pen.write(False)
 
 joints = []
@@ -44,7 +48,7 @@ for joint in ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist
 
 
 joints[1].setPosition(0)
-state=0
+
 
 counter = 0
 found = True
@@ -68,62 +72,167 @@ def moveArm(joints, one, two, three, four, five, six):
     joints[3].setPosition(four)
     joints[4].setPosition(five)
     joints[5].setPosition(six)
+ 
+def moveArmToTarget(target):
+    angles = targetToJointsMap[target]
+    for i in range(len(joints)):
+        joints[i].setPosition(angles[i])
+    robot.step(timestep*200)
+
+def draw():
+    pen.write(True)
+    joints[5].setPosition(6.28)
+    robot.step(timestep*149)
+    joints[5].setPosition(-6.28)
+    robot.step(timestep*149)
+    pen.write(False)
     
 
 targetToJointsMap = {
-    1 : (-0.73, -1.34, 2.43, 3.59, 4.76, 0),
-    2 : (-0.54, -1.1, 2.055, 3.69, 4.76, 0.18),
-    3 : (-0.43, -0.87, 1.6, 3.92, 4.76, 0.27),
-    4 : (-0.36, -0.56, 1, 4.2, 4.76, 0.35),
-    5 : (-0.18, -0.55, 0.96, 4.3, 4.76, 0.55),
-    6 : (-0.22, -0.87, 1.6, 3.97, 4.76, 0.5),
-    7 : (-0.28, -1.105, 2.09, 3.69, 4.76, 0.5),
-    8 : (-0.385, -1.37, 2.5, 3.57, 4.76, 0.37),
-    9 : (0.015, -1.33, 2.43, 3.57, 4.76, 0.72),
-    10: (0.005, -1.12, 2.07, 3.66, 4.76, 0.72),
-    11: (0.005, -0.85, 1.58, 3.92, 4.76, 0.72),
-    12 : (0, -0.55, 0.95, 4.25, 4.76, 0.72),
-    13 : (0.175, -0.46, 0.78, 4.3, 4.76, 0.9),
-    14 : (,
-    15 : (,
-    16 : (,
+    0 : (-0.73, -1.34, 2.43, 3.59, 4.76, 0),
+    1 : (-0.54, -1.1, 2.055, 3.69, 4.76, 0.18),
+    2 : (-0.43, -0.87, 1.6, 3.92, 4.76, 0.27),
+    3 : (-0.36, -0.56, 1, 4.2, 4.76, 0.35),
+    4 : (-0.18, -0.55, 0.96, 4.3, 4.76, 0.55),
+    5 : (-0.22, -0.87, 1.6, 3.97, 4.76, 0.5),
+    6 : (-0.28, -1.105, 2.09, 3.69, 4.76, 0.5),
+    7 : (-0.385, -1.37, 2.5, 3.57, 4.76, 0.37),
+    8 : (0.015, -1.33, 2.43, 3.57, 4.76, 0.72),
+    9: (0.005, -1.12, 2.07, 3.66, 4.76, 0.72),
+    10: (0.005, -0.85, 1.58, 3.92, 4.76, 0.72),
+    11 : (0, -0.55, 0.95, 4.25, 4.76, 0.72),
+    12 : (0.175, -0.46, 0.78, 4.3, 4.76, 0.9),
+    13 : (0.21, -0.74, 1.33, 4.15, 4.76, 0.95),
+    14 : (0.27, -1.01, 1.86, 3.8, 4.76, 1),
+    15 : (0.355, -1.19, 2.22, 3.65, 4.76, 1.08),
 }
 
 
 targetToCoordMap = {
 }
+#      COL 0  1  2  3
+#  ROW
+#  0       0  7  8  15
+#  1       1  6  9  14
+#  2       2  5  10 13
+#  3       3  4  11 12
+#
+
 
 numSquares = 16
 row_index = 0
 for i in range(numSquares):
-    targetToCoordMap[i] = (row_index, i // 4)
-    row_index += 1
-    if row_index == 4:
-        row_index = 0
+    col = i // 4
+    
+    targetToCoordMap[i] = (row_index, col)
+    if col % 2 == 0:
+        row_index += 1
+        if ((i+1)//4) % 2 == 1:
+            row_index -= 1
+    else:
+        row_index -= 1
+        if ((i+1)//4) % 2 == 0:
+           row_index += 1
+ 
        
-numTargets = 5
-randomTargets = random.sample(range(numSquares), numTargets)
-
+numTargets = 25
+randomTargets = random.sample(range(numTargets), numTargets)
 targetCounter = 0
+
+
+L = 4
+
+bingoBoard = [[0 for w in range(L)] for j in range(L)]
+
+def isBingo():
+    bingo = True
+    for i in range(L):
+        if bingoBoard[i][i] == 0:
+            bingo = False
+    if bingo: return bingo
+    
+    bingo = True
+    for i in range(L):
+        if bingoBoard[L - i - 1][i] == 0: bingo = False
+    
+    if bingo: return bingo
+    
+    
+    for row in range(L):
+        bingo = True
+        for col in range(L):
+            if bingoBoard[row][col] == 0: bingo = False
+        if bingo: return bingo
+    for col in range(L):
+        bingo = True
+        for row in range(L):
+            if bingoBoard[row][col] == 0: bingo = False
+        if bingo: return bingo
+    
+    
+    
+    
+    
+        
+
+isBingo()
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
+newTarget = None
+state="process"
+a = 0
 while robot.step(timestep) != -1:
     # Read the sensors:
     # Enter here functions to read sensor data, like:
     #  val = ds.getValue()
-    
-    if receiver.getQueueLength() > 0:
-        print("GOT AT " + robot.getName() + " " + receiver.getData().decode())
-        receiver.nextPacket()
         
     # Process sensor data here.
-    if state == 0:
-        newTarget = randomTargets[targetCounter]
-        targetCounter += 1
-        if targetCounter >= numTargets:
+    if state == "process":
+        for squareNum in range(numSquares):
+            moveArmToTarget(squareNum)
+        print("ROBOT IS DONE PROCESSING")
+        emitter.send(bytes("Ready", 'utf-8'))
+        state = "wait"
+               
+    if state == "play":
+       
+        if targetCounter >= len(randomTargets):
             break
-        state = newTarget
+        targetCounter += 1
+        if newTarget < numSquares:
+            moveArmToTarget(newTarget)
+            if found:
+                x, y = targetToCoordMap[newTarget]
+                bingoBoard[x][y] = 1
+                draw()
+                if isBingo():
+                    print("BINGO!")
+                    emitter.send(bytes(robot.getName(), 'utf-8'))
+                    break
+                
+                
+        emitter.send(bytes("Ready", 'utf-8'))
         
+        state = "wait"
+            
+    if state == "wait":
+        if receiver.getQueueLength() > 0:
+            newTarget = receiver.getData().decode()
+            
+            newTarget = randomTargets[int(newTarget.split()[0])] # for testing just get int for now
+            if newTarget <= 16:
+                a += 1
+            # print("FINDING: " + str(newTarget) + " " + str(a))
+            receiver.nextPacket()
+            state = "play"
+     
+     
+     
+     
+     
+     
+     
+            
     # Move arm to square 1
     elif state==1:
         if counter==0:

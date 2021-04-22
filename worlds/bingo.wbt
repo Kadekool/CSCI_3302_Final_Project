@@ -21,7 +21,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.9991018788185176 0.03525109956676545 0.02351160821045902 4.980011107737046
-  position -2.647638755086555 4.922439207247425 1.0107105172905502
+  position -2.5866712877700007 4.822236208755233 1.3793386830185015
   exposure 1.7
 }
 TexturedBackground {
@@ -68,6 +68,8 @@ UR5e {
   controller "bingoarm"
   selfCollision FALSE
   toolSlot [
+    Emitter {
+    }
     Receiver {
     }
     Camera {
@@ -81,7 +83,6 @@ UR5e {
       rotation 0 0 1 3.14
       inkDensity 1
       leadSize 0.01
-      write FALSE
     }
     DistanceSensor {
       translation 0 0.1 0
@@ -96,6 +97,8 @@ UR5e {
   controller "bingoarm"
   selfCollision FALSE
   toolSlot [
+    Emitter {
+    }
     Receiver {
     }
     Camera {
@@ -109,7 +112,6 @@ UR5e {
       rotation 0 0 1 3.14
       inkDensity 1
       leadSize 0.01
-      write FALSE
     }
     DistanceSensor {
       translation 0 0.1 0
@@ -733,9 +735,12 @@ DEF board2 Solid {
   locked TRUE
 }
 AiboErs7 {
+  translation -2.65547 0.143 1.09098
   controller "bingomaster"
   supervisor TRUE
   headSlot [
+    Receiver {
+    }
     Emitter {
     }
   ]
