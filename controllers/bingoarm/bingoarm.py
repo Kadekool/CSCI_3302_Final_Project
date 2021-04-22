@@ -230,8 +230,10 @@ while robot.step(timestep) != -1:
      
      
      
-     
-     
+ ###################################################################################  
+     # NOT USING ANYTHING BELOW: KEEP FOR REFERENCE
+     # TODO: MOVE SNAPSHOT FEATURE TO CODE ABOVE IF POSSIBLE
+ ################################################################################
      
             
     # Move arm to square 1
