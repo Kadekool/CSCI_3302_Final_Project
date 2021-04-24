@@ -9,7 +9,10 @@ from controller import Pen
 from controller import Emitter
 import random
 import struct
-
+import ikpy
+from ikpy.chain import Chain
+import math
+import tempfile
 
 # create the Robot instance.
 robot = Robot()
@@ -44,7 +47,11 @@ pen.write(False)
 
 joints = []
 for joint in ["shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"]:
-    joints.append(robot.getDevice(joint))
+    jointToAdd = robot.getDevice(joint)
+    position_sensor = jointToAdd.getPositionSensor()
+    position_sensor.enable(1)
+    joints.append(jointToAdd)
+    
 
 
 joints[1].setPosition(0)
@@ -74,11 +81,14 @@ def moveArm(joints, one, two, three, four, five, six):
     joints[4].setPosition(five)
     joints[5].setPosition(six)
  
-def moveArmToTarget(target):
+
+def moveArmToTarget(target, squareNum):
     angles = targetToJointsMap[target]
     for i in range(len(joints)):
         joints[i].setPosition(angles[i])
     robot.step(timestep*200)
+    if (squareNum!=-1):
+         camera.saveImage("square" + str(squareNum)+".jpg", 100)
 
 def draw():
     pen.write(True)
@@ -169,11 +179,141 @@ def isBingo():
         for row in range(L):
             if bingoBoard[row][col] == 0: bingo = False
         if bingo: return bingo
+        
+
+#ATTEMPTED TO USE IKPY BUT COULDN't get it to work
+"""
+
+filename = None
+with tempfile.NamedTemporaryFile(suffix='.urdf', delete=False) as file:
+    filename = file.name
+    file.write(robot.getUrdf().encode('utf-8'))
+    
+armChain = Chain.from_urdf_file(filename)   
+for i in [0, 6]:
+    armChain.active_links_mask[0] = False
+    
+def ikHelper(xyz,xyzO, orientation_axis):
+    ik = armChain.inverse_kinematics(xyz)
+    ikResults = armChain.inverse_kinematics(target_position=xyz, target_orientation=xyzO, initial_position=ik, orientation_mode=orientation_axis)
+    ikResults = ikResults[1:]
+    return ikResults
+  
+def calculateIk():
+    #Square1  
+    xyz = [0.37138053,-0.15253127, 0.23241167]
+    xyzO = [0.02, 0.007, -0.38]
+    orientation_axis = "Y"
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    targetToJointsMap[0] = ikResults
     
     
+    #Square2
+    xyz = [0.51402271, -0.15189024, 0.22850214]
+    xyzO = [0.04,0, -0.48]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    ikResults[5] = 0.18
+    targetToJointsMap[1] = ikResults
     
     
+    #Square3
+    xyz = [0.66120012,-0.15581998, 0.232662]
+    xyzO = [0.1 ,-0.2,-1.9]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    ikResults[5] = 0.25
+    targetToJointsMap[2] = ikResults
     
+    #Square4
+    xyz = [0.80947788, -0.16151161, 0.22901874]
+    xyzO = [0,0, -0.25]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[3] = ikResults
+    
+    #Square5
+    xyz = [0.83254614, -0.01529753, 0.22912641]
+    xyzO = [0,0, -10]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[4] = ikResults
+    
+    #Square6
+    xyz = [0.67933876,-0.01460383, 0.22766602]
+    xyzO = [0,0, 0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[5] = ikResults
+    
+    #Square7
+    xyz = [0.52480051,-0.01147862,0.21981785]
+    xyzO = [0,0, 0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[6] = ikResults
+    
+    #Square8
+    xyz = [0.37656639,-0.00800924,0.22617036]
+    xyzO = [0,0, 0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[7] = ikResults
+    
+    #Square9
+    xyz = [3.77019582e-01,1.39670794e-01,2.30622561e-01 ]
+    xyzO = [0,0, 0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[8] = ikResults
+    
+    #Square10
+    xyz = [0.51198466, 0.13656162, 0.23690503]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[9] = ikResults
+    
+    #Square11
+    xyz = [0.67172822,0.13736034,0.22711638]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[10] = ikResults
+    
+    #Square12
+    xyz = [0.82318425,0.134,0.23872524]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[11] = ikResults
+    
+    #Square13
+    xyz = [0.81614503,0.28037986,0.23759393]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[12] = ikResults
+    
+    #Square14
+    xyz = [0.69535911,0.28522052,0.22871836]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[13] = ikResults
+    
+    #Square15
+    xyz = [0.52763953,0.28506573,0.23463669]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[14] = ikResults
+    
+    #Square16
+    xyz = [0.3844702,0.28543608,0.22473412]
+    xyzO = [0,0,0]
+    ikResults = ikHelper(xyz,xyzO,orientation_axis)
+    #ikResults[5] = 0.18
+    targetToJointsMap[15] = ikResult    
+"""
         
 
 isBingo()
@@ -190,7 +330,7 @@ while robot.step(timestep) != -1:
     # Process sensor data here.
     if state == "process":
         for squareNum in range(numSquares):
-            moveArmToTarget(squareNum)
+            moveArmToTarget(squareNum, squareNum)
         print("ROBOT IS DONE PROCESSING")
         emitter.send(bytes("Ready", 'utf-8'))
         state = "wait"
@@ -201,7 +341,7 @@ while robot.step(timestep) != -1:
             break
         targetCounter += 1
         if newTarget < numSquares:
-            moveArmToTarget(newTarget)
+            moveArmToTarget(newTarget, -1)
             if found:
                 x, y = targetToCoordMap[newTarget]
                 bingoBoard[x][y] = 1
