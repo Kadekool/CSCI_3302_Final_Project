@@ -70,6 +70,7 @@ responses = []
 
 # NUMCOMBOS = len(shapes) * len(colors)
 # randIndexes = random.sample(range(NUMCOMBOS), NUMCOMBOS) # for testing
+count = 0
 while supervisor.step(timestep) != -1:
     # Read the sensors:
     # Enter here functions to read sensor data, like:
@@ -81,6 +82,10 @@ while supervisor.step(timestep) != -1:
     #  motor.setPosition(10.0)
 
     if state == "waiting":
+        if count < 500:
+            count += 1
+            continue
+            
         while receiver.getQueueLength() > 0:
             responses.append(receiver.getData().decode())
             receiver.nextPacket()
@@ -96,12 +101,12 @@ while supervisor.step(timestep) != -1:
                 print("WE GOT A BINGO FROM: " + player)
                 supervisor.step(timestep)
                 supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-
+        count = 0
     if state == "calling":
         target = chooseTarget()
         if target:
             targetName = target[0] + " " + target[1].capitalize()
-            print("FROM EMITTER: ", targetName)
+            print("Next Target: " +  targetName)
 
             emitter.send(bytes(targetName, 'utf-8'))
         else:

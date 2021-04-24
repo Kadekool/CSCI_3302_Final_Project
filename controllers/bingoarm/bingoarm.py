@@ -21,6 +21,7 @@ from PIL import Image
 import cv2
 import os
 from sklearn.neighbors import KNeighborsClassifier
+import copy
 
 # create the Robot instance.
 robot = Robot()
@@ -216,9 +217,6 @@ def moveArmToTarget(target, squareNum):
          filename = "square" + str(squareNum) + str(robot.getName()) +".jpg"
          camera.saveImage(filename, 100)
          knn.run(filename)
-         if(squareNum == 15):
-             shapeToTargetMap = knn.get_dict()
-             print(shapeToTargetMap)
              
 
 def draw():
@@ -463,6 +461,8 @@ while robot.step(timestep) != -1:
         for squareNum in range(numSquares):
             moveArmToTarget(squareNum, squareNum)
         print("ROBOT IS DONE PROCESSING")
+        shapeToTargetMap = knn.get_dict()
+        print(shapeToTargetMap)
         emitter.send(bytes("Ready", 'utf-8'))
         state = "wait"
                
@@ -490,12 +490,10 @@ while robot.step(timestep) != -1:
     if state == "wait":
         if receiver.getQueueLength() > 0:
             newTarget = receiver.getData().decode()
-            print(newTarget, "CHECK", shapeToTargetMap)
             if newTarget in shapeToTargetMap:
                 newTarget = shapeToTargetMap[newTarget]
             else:
                 newTarget = None
-            print(newTarget, "CHECK2")
             receiver.nextPacket()
             state = "play"
      
