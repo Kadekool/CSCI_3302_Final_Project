@@ -68,8 +68,8 @@ state = "waiting"
 
 responses = []
 
-NUMCOMBOS = len(shapes) * len(colors)
-randIndexes = random.sample(range(NUMCOMBOS), NUMCOMBOS) # for testing
+# NUMCOMBOS = len(shapes) * len(colors)
+# randIndexes = random.sample(range(NUMCOMBOS), NUMCOMBOS) # for testing
 while supervisor.step(timestep) != -1:
     # Read the sensors:
     # Enter here functions to read sensor data, like:
@@ -100,12 +100,10 @@ while supervisor.step(timestep) != -1:
     if state == "calling":
         target = chooseTarget()
         if target:
-            targetName = target[0] + " " + target[1]
-            print("FROM EMITTER: ", targetName, len(possCombo))
+            targetName = target[0] + " " + target[1].capitalize()
+            print("FROM EMITTER: ", targetName)
 
-            randInd = randIndexes.pop(0) # for testing
-
-            emitter.send(bytes(str(randInd) + " " + targetName, 'utf-8'))
+            emitter.send(bytes(targetName, 'utf-8'))
         else:
             break
         state = "waiting"

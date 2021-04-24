@@ -13,6 +13,14 @@ import ikpy
 from ikpy.chain import Chain
 import math
 import tempfile
+import math
+import pickle
+import gzip
+import numpy as np
+from PIL import Image
+import cv2
+import os
+from sklearn.neighbors import KNeighborsClassifier
 
 # create the Robot instance.
 robot = Robot()
@@ -61,6 +69,121 @@ counter = 0
 found = True
 snapshotTaken = False
 
+
+class KNN():
+    def __init__(self, directory = 'Shapes'):
+        file = open('data.pkl', 'wb') 
+        self.y = []
+        temp = []
+        self.dict = {}
+        self.index = 0
+
+        self.name_finder = {}
+
+        colors = ['blue', 'pink', 'yellow', 'green', 'orange']
+        shapes = ['Circle', 'Diamond', 'Parallelogram', 'Trapezoid', 'Triangle']
+
+
+
+        i = 0
+        for filename in os.listdir('Shapes'):
+            if 'jpg' not in filename:
+                continue
+
+            for color in colors:
+                for shape in shapes:
+                    if color in filename and shape in filename:
+                        self.name_finder[i] = str(color + ' ' + shape)
+
+            self.y.append(str(filename))
+            string = 'Shapes/'+ filename
+            im = cv2.imread(string)
+            temp.append(im)
+            i += 1
+
+        pickle.dump(temp, file)
+        file.close()
+
+        self.X = ""
+        with open('data.pkl', 'rb') as pickle_file:
+            self.X = pickle.load(pickle_file)
+    
+    def setup(self):
+        X_temp = []
+        maxSize = 0
+
+        for row in self.X:
+            temp = []
+            for item1 in row:
+                for item in item1:
+                    for c in item:
+                        temp.append(c)
+            maxSize = max(len(temp), maxSize)
+
+        for row in self.X:
+            temp = []
+            for item1 in row:
+                for item in item1:
+                    for c in item:
+                        temp.append(c)
+
+            temp = [temp[i] if i < len(temp) else 0 for i in range(maxSize) ]
+            temp = np.array(temp)
+            X_temp.append(temp)
+
+        self.X = [X_temp[i] for i in range(len(X_temp))]
+
+        namestore = {i:self.y[i] for i in range(len(self.y))}
+
+        y = [i for i in range(len(self.y))]
+
+        self.neigh = KNeighborsClassifier(n_neighbors=1)
+
+        self.neigh.fit(self.X, y)
+        self.maxSize = maxSize
+        
+    def run(self, path = None):
+        
+        file = open('data2.pkl', 'wb') 
+        y_2 = []
+        temp = []
+
+        y_2.append(path)
+
+        im = cv2.imread(path)
+        temp.append(im)
+
+        pickle.dump(temp, file)
+        file.close()
+
+        X_t = ""
+        try:
+            with open('data2.pkl', 'rb') as pickle_file:
+                X_t = pickle.load(pickle_file)
+    
+            for row in X_t:
+                temp = []
+                for item1 in row:
+                    for item in item1:
+                        for c in item:
+                            temp.append(c)
+    
+                temp = [temp[i] if i < len(temp) else 0 for i in range(self.maxSize) ]
+                X_t = temp
+            print(self.neigh.predict(np.array(X_t).reshape(1, -1)))
+            self.dict[self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]]] = self.index
+        except:
+            pass
+        self.index += 1
+    def get_dict(self):
+        return self.dict
+
+
+
+
+
+
+
 # colors = ["blue", "brown", "green", "orange", "pink", "yellow"]
 # shapes = ["circle", "diamond", "hexagon", "parallelogram", "trapezoid", "triangle"]
 # possCombo = [(c, s) for c in colors for s in shapes]
@@ -72,15 +195,17 @@ snapshotTaken = False
     # target = possCombo[choice]
     # possCombo.remove(target)
     # return target
+knn1 = KNN()
+knn2 = KNN()
 
-def moveArm(joints, one, two, three, four, five, six):
-    joints[0].setPosition(one)
-    joints[1].setPosition(two)
-    joints[2].setPosition(three)
-    joints[3].setPosition(four)
-    joints[4].setPosition(five)
-    joints[5].setPosition(six)
- 
+if(robot.getName() == "player1"):
+    knn = knn1
+else:
+    knn = knn2
+knn.setup()
+
+
+shapeToTargetMap = {}
 
 def moveArmToTarget(target, squareNum):
     angles = targetToJointsMap[target]
@@ -88,7 +213,13 @@ def moveArmToTarget(target, squareNum):
         joints[i].setPosition(angles[i])
     robot.step(timestep*200)
     if (squareNum!=-1):
-         camera.saveImage("square" + str(squareNum)+".jpg", 100)
+         filename = "square" + str(squareNum) + str(robot.getName()) +".jpg"
+         camera.saveImage(filename, 100)
+         knn.run(filename)
+         if(squareNum == 15):
+             shapeToTargetMap = knn.get_dict()
+             print(shapeToTargetMap)
+             
 
 def draw():
     pen.write(True)
@@ -340,7 +471,7 @@ while robot.step(timestep) != -1:
         if targetCounter >= len(randomTargets):
             break
         targetCounter += 1
-        if newTarget < numSquares:
+        if newTarget:
             moveArmToTarget(newTarget, -1)
             if found:
                 x, y = targetToCoordMap[newTarget]
@@ -359,463 +490,16 @@ while robot.step(timestep) != -1:
     if state == "wait":
         if receiver.getQueueLength() > 0:
             newTarget = receiver.getData().decode()
-            
-            newTarget = randomTargets[int(newTarget.split()[0])] # for testing just get int for now
-            if newTarget <= 16:
-                a += 1
-            # print("FINDING: " + str(newTarget) + " " + str(a))
+            print(newTarget, "CHECK", shapeToTargetMap)
+            if newTarget in shapeToTargetMap:
+                newTarget = shapeToTargetMap[newTarget]
+            else:
+                newTarget = None
+            print(newTarget, "CHECK2")
             receiver.nextPacket()
             state = "play"
      
-     
-     
-     
- ###################################################################################  
-     # NOT USING ANYTHING BELOW: KEEP FOR REFERENCE
-     # TODO: MOVE SNAPSHOT FEATURE TO CODE ABOVE IF POSSIBLE
- ################################################################################
-     
-            
-    # Move arm to square 1
-    elif state==1:
-        if counter==0:
-            moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, 0)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            if snapshotTaken==False:
-                snapshotTaken=True
-                camera.saveImage("square1.jpg", 100)
-                pass
-            pen.write(True)
-            moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.73, -1.34, 2.43, 3.59, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           snapshotTaken=False
-           counter=0
-           state=2
 
-    # Move arm to square 2
-    elif state==2:
-        if counter==0:
-            moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, 0.18)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            if snapshotTaken==False:
-                snapshotTaken=True
-                camera.saveImage("square2.jpg", 100)
-                pass
-            pen.write(True)
-            moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.54, -1.1, 2.055, 3.69, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           snapshotTaken=False
-           pen.write(False)
-           counter=0
-           state=3
-
-    # Move arm to square 3
-    elif state==3:
-        if counter==0:
-            moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, 0.27)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            if snapshotTaken==False:
-                snapshotTaken=True
-                camera.saveImage("square3.jpg", 100)
-                pass
-            pen.write(True)
-            moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.43, -0.87, 1.6, 3.92, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           snapshotTaken=False
-           pen.write(False)
-           counter=0
-           state=4
-
-    # Move arm to square 4
-    elif state==4:
-        if counter==0:
-            moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, 0.35)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            if snapshotTaken==False:
-                snapshotTaken=True
-                camera.saveImage("square4.jpg", 100)
-                pass
-            pen.write(True)
-            moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.36, -0.56, 1, 4.2, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           snapshotTaken=False
-           pen.write(False)
-           counter=0
-           state=5
-
-    # Move arm to square 5
-    elif state==5:
-        if counter==0:
-            moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, 0.55)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            if snapshotTaken==False:
-                snapshotTaken=True
-                camera.saveImage("square5.jpg", 100)
-                pass
-            pen.write(True)
-            moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.18, -0.55, 0.96, 4.3, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           snapshotTaken=False
-           pen.write(False)
-           counter=0
-           state=6
-
-    # Move arm to square 6
-    elif state==6:
-        if counter==0:
-            moveArm(joints,-0.22, -0.87, 1.6, 3.97, 4.76, 0.5)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,-0.22, -0.87, 1.6, 3.97, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.22, -0.87, 1.6, 3.97, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=7
-
-
-   # Move arm to square 7
-    elif state==7:
-        if counter==0:
-            moveArm(joints,-0.28, -1.105, 2.09, 3.69, 4.76, 0.5)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,-0.28, -1.105, 2.09, 3.69, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.28, -1.105, 2.09, 3.69, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=8
-
-   # Move arm to square 8
-    elif state==8:
-        if counter==0:
-            moveArm(joints,-0.385, -1.37, 2.5, 3.57, 4.76, 0.37)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,-0.385, -1.37, 2.5, 3.57, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,-0.385, -1.37, 2.5, 3.57, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=9
-           
-   # Move arm to square 9
-    elif state==9:
-        if counter==0:
-            moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, 0.72)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.015, -1.33, 2.43, 3.57, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=10
-            
-   # Move arm to square 10
-    elif state==10:
-        if counter==0:
-            moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, 0.72)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.005, -1.12, 2.07, 3.66, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=11
-            
-   # Move arm to square 11      
-    elif state==11:
-        if counter==0:
-            moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, 0.72)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.005, -0.85, 1.58, 3.92, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=12
-            
-   # Move arm to square 12      
-    elif state==12:
-        if counter==0:
-            moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, 0.72)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0, -0.55, 0.95, 4.25, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=13    
-         
-   # Move arm to square 13      
-    elif state==13:
-        if counter==0:
-            moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, 0.9)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.175, -0.46, 0.78, 4.3, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=14  
-            
-   # Move arm to square 14      
-    elif state==14:
-        if counter==0:
-            moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, 0.95)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.21, -0.74, 1.33, 4.15, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=15
-             
-   # Move arm to square 15      
-    elif state==15:
-        if counter==0:
-            moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, 1)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.27, -1.01, 1.86, 3.8, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=16 
-            
-   # Move arm to square 16      
-    elif state==16:
-        if counter==0:
-            moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, 1.08)
-            counter = counter+1
-        elif counter<200:
-            counter = counter+1
-            pass
-        elif found and counter<201:
-            pen.write(True)
-            moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, 6.28)
-            counter=counter+1
-        elif found and counter<350:
-            counter = counter+1
-            pass
-        elif found and counter<351:
-            moveArm(joints,0.355, -1.19, 2.22, 3.65, 4.76, -6.28)
-            counter=counter+1
-        elif found and counter<500:
-            counter = counter+1
-            pass
-        else:
-           pen.write(False)
-           counter=0
-           state=1
+    
          
 # Enter here exit cleanup code.
