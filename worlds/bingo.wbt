@@ -414,7 +414,7 @@ DEF board1 Solid {
     TexturedBoxShape {
       size 0.6 0.01 0.6
       textureUrl [
-        "textures/chessboard.jpg"
+        "textures/boardBackground.jpg"
       ]
       textureMapping "default"
       frontFace FALSE
@@ -721,7 +721,7 @@ DEF board2 Solid {
     TexturedBoxShape {
       size 0.6 0.01 0.6
       textureUrl [
-        "textures/chessboard.jpg"
+        "textures/boardBackground.jpg"
       ]
       textureMapping "default"
       frontFace FALSE
