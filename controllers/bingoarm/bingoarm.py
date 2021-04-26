@@ -84,7 +84,8 @@ class KNN():
         colors = ['blue', 'pink', 'yellow', 'green', 'orange']
         shapes = ['Circle', 'Diamond', 'Parallelogram', 'Trapezoid', 'Triangle']
 
-
+        self.found = set()
+        self.indices = {}
 
         i = 0
         for filename in os.listdir('Shapes'):
@@ -94,13 +95,19 @@ class KNN():
             for color in colors:
                 for shape in shapes:
                     if color in filename and shape in filename:
+                        
+                        if str(color + ' ' + shape) not in self.indices:
+                            self.indices[str(color + ' ' + shape)] = []
+                        else:
+                            self.indices[str(color + ' ' + shape)].append(i)
+
                         self.name_finder[i] = str(color + ' ' + shape)
 
-            self.y.append(str(filename))
-            string = 'Shapes/'+ filename
-            im = cv2.imread(string)
-            temp.append(im)
-            i += 1
+                        self.y.append(str(filename))
+                        string = 'Shapes/'+ filename
+                        im = cv2.imread(string)
+                        temp.append(im)
+                        i += 1
 
         pickle.dump(temp, file)
         file.close()
@@ -115,6 +122,8 @@ class KNN():
 
         for row in self.X:
             temp = []
+            if row is None:
+                continue
             for item1 in row:
                 for item in item1:
                     for c in item:
@@ -123,6 +132,8 @@ class KNN():
 
         for row in self.X:
             temp = []
+            if row is None:
+                continue
             for item1 in row:
                 for item in item1:
                     for c in item:
@@ -136,11 +147,11 @@ class KNN():
 
         namestore = {i:self.y[i] for i in range(len(self.y))}
 
-        y = [i for i in range(len(self.y))]
+        self.y = [i for i in range(len(X_temp))]
 
-        self.neigh = KNeighborsClassifier(n_neighbors=1)
+        self.neigh = KNeighborsClassifier(n_neighbors=3)
 
-        self.neigh.fit(self.X, y)
+        self.neigh.fit(self.X, self.y)
         self.maxSize = maxSize
         
     def run(self, path = None):
@@ -158,23 +169,29 @@ class KNN():
         file.close()
 
         X_t = ""
-        try:
-            with open('data2.pkl', 'rb') as pickle_file:
-                X_t = pickle.load(pickle_file)
-    
-            for row in X_t:
-                temp = []
-                for item1 in row:
-                    for item in item1:
-                        for c in item:
-                            temp.append(c)
-    
-                temp = [temp[i] if i < len(temp) else 0 for i in range(self.maxSize) ]
-                X_t = temp
-            print(self.neigh.predict(np.array(X_t).reshape(1, -1)))
-            self.dict[self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]]] = self.index
-        except:
-            pass
+        
+        with open('data2.pkl', 'rb') as pickle_file:
+            X_t = pickle.load(pickle_file)
+        for row in X_t:
+
+            temp = []
+            for item1 in row:
+                for item in item1:
+                    for c in item:
+                        temp.append(c)
+
+            temp = [temp[i] if i < len(temp) else 0 for i in range(self.maxSize) ]
+            X_t = temp
+
+        print(self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]])
+
+        self.found.add(self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]])
+        self.dict[self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]]] = self.index
+
+        self.neigh = KNeighborsClassifier(n_neighbors=3)
+
+        self.neigh.fit([self.X[i] for i in range(len(self.X)) if self.name_finder[i] not in self.found], [self.y[i] for i in range(len(self.y)) if self.name_finder[i] not in self.found])
+
         self.index += 1
     def get_dict(self):
         return self.dict
