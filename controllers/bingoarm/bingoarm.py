@@ -169,29 +169,30 @@ class KNN():
         file.close()
 
         X_t = ""
-        
-        with open('data2.pkl', 'rb') as pickle_file:
-            X_t = pickle.load(pickle_file)
-        for row in X_t:
-
-            temp = []
-            for item1 in row:
-                for item in item1:
-                    for c in item:
-                        temp.append(c)
-
-            temp = [temp[i] if i < len(temp) else 0 for i in range(self.maxSize) ]
-            X_t = temp
-
-        print(self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]])
-
-        self.found.add(self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]])
-        self.dict[self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]]] = self.index
-
-        self.neigh = KNeighborsClassifier(n_neighbors=3)
-
-        self.neigh.fit([self.X[i] for i in range(len(self.X)) if self.name_finder[i] not in self.found], [self.y[i] for i in range(len(self.y)) if self.name_finder[i] not in self.found])
-
+        try:
+            with open('data2.pkl', 'rb') as pickle_file:
+                X_t = pickle.load(pickle_file)
+            for row in X_t:
+    
+                temp = []
+                for item1 in row:
+                    for item in item1:
+                        for c in item:
+                            temp.append(c)
+    
+                temp = [temp[i] if i < len(temp) else 0 for i in range(self.maxSize) ]
+                X_t = temp
+    
+            print(self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]])
+    
+            self.found.add(self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]])
+            self.dict[self.name_finder[self.neigh.predict(np.array(X_t).reshape(1, -1))[0]]] = self.index
+    
+            self.neigh = KNeighborsClassifier(n_neighbors=3)
+    
+            self.neigh.fit([self.X[i] for i in range(len(self.X)) if self.name_finder[i] not in self.found], [self.y[i] for i in range(len(self.y)) if self.name_finder[i] not in self.found])
+        except:
+            pass
         self.index += 1
     def get_dict(self):
         return self.dict
